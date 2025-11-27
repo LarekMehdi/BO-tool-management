@@ -4,14 +4,14 @@ import java.time.LocalDateTime;
 
 
 import org.hibernate.annotations.CreationTimestamp;
-
 import fr.mehdi.tool_management.category.Category;
 import fr.mehdi.tool_management.constantes.Department;
 import fr.mehdi.tool_management.constantes.ToolStatus;
+import fr.mehdi.tool_management.converters.DepartmentConverter;
+import fr.mehdi.tool_management.converters.ToolStatusConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -54,12 +54,12 @@ public class Tool {
     @Column(nullable = false)
     private Integer             activeUsersCount;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "department_type")
+    @Convert(converter = DepartmentConverter.class)
     private Department          ownerDepartment;
 
-    @Column
-    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "tool_status_type")
+    @Convert(converter = ToolStatusConverter.class)
     private ToolStatus          status = ToolStatus.active;
 
     @Column(nullable = false)

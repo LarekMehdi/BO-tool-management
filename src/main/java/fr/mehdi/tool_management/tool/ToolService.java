@@ -15,6 +15,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import fr.mehdi.tool_management.category.Category;
 import fr.mehdi.tool_management.category.CategoryService;
+import fr.mehdi.tool_management.filters.FiltersApplied;
 import fr.mehdi.tool_management.filters.PageDto;
 import fr.mehdi.tool_management.tool.dtos.ToolDto;
 import fr.mehdi.tool_management.tool.filters.ToolFilter;
@@ -45,9 +46,11 @@ public class ToolService {
         List<Category> categories = this.categoryService.findAllByIds(categoryIds);
         Map<Integer, Category> categoryById = categories.stream().filter(Category::hasId).collect(Collectors.toMap(Category::getId, Function.identity()));
 
+        FiltersApplied filtersApplied = new FiltersApplied();
+
         // construction du résultat
         List<ToolDto> toolDtos = UtilMapper.mapToolListToDtos(tools.getContent(), categoryById);
-        PageDto<ToolDto> result = new PageDto<>(toolDtos, tools.getTotalElements());
+        PageDto<ToolDto> result = new PageDto<>(toolDtos, tools.getTotalElements(), filtersApplied);
         return result;
 
     }

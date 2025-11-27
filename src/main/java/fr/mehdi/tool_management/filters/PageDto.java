@@ -24,6 +24,12 @@ public class PageDto<T> {
         this.total = total;
     }
 
+    public PageDto(List<T> datas, Long total, FiltersApplied filtersApplied) {
+        this.data = datas;
+        this.total = total;
+        this.filtersApplied = filtersApplied;
+    }
+
     /** DATA **/
 
     public List<T> getData() {

@@ -8,7 +8,7 @@ import fr.mehdi.tool_management.constantes.SortOrder;
 import fr.mehdi.tool_management.utils.UtilEntity;
 import jakarta.validation.constraints.Min;
 
-public class GenericFilter {
+public abstract class GenericFilter {
 
     @Min(value = 1, message = "Limit must be greater than 0")
     private Integer         limit;
@@ -120,5 +120,14 @@ public class GenericFilter {
         return this.offset / this.limit;
     }
 
+    /** FILTERS APPLIED **/
+    
+    protected abstract void populateFiltersApplied(FiltersApplied filtersApplied);
+
+    public FiltersApplied buildFiltersApplied() {
+        FiltersApplied fa = new FiltersApplied();
+        populateFiltersApplied(fa);
+        return fa;
+    }
 
 }
