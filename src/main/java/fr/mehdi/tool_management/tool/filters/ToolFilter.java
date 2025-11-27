@@ -1,6 +1,7 @@
 package fr.mehdi.tool_management.tool.filters;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class ToolFilter extends GenericFilter{
     private ToolStatus          status;
     private Department          department;
     private String              category;     // category name pour matcher la demande (passer par id serait mieux)
+    private LocalDateTime       createdAt;
 
     /** MIN COST **/
 
@@ -60,6 +62,12 @@ public class ToolFilter extends GenericFilter{
         return !UtilEntity.isEmpty(this.category);
     }
 
+    /** CREATED AT **/
+
+    public boolean hasCreatedAt() {
+        return !UtilEntity.isEmpty(this.createdAt);
+    }
+
     /** WHERE CONDITIONS **/
 
     public Specification<Tool> toSpecification() {
@@ -68,11 +76,6 @@ public class ToolFilter extends GenericFilter{
         //cb => criteriaBuilder
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
-
-            //exemple
-            // if (this.hasTitle()) {
-            //     predicates.add(cb.like(cb.lower(root.get("title")), "%" + this.getTitle().toLowerCase() + "%"));
-            // }
 
             // MIN COST
             if (this.hasMinCost()) {
@@ -84,7 +87,7 @@ public class ToolFilter extends GenericFilter{
                 predicates.add(cb.lessThanOrEqualTo(root.get("monthlyCost"), this.getMaxCost()));
             }
 
-            // STATUS - cast avec ::text
+            // STATUS
             if (this.hasStatus()) {
                 predicates.add(cb.equal(
                     cb.function("text", String.class, root.get("status")),
@@ -92,12 +95,19 @@ public class ToolFilter extends GenericFilter{
                 ));
             }
 
-            // DEPARTMENT - cast avec ::text
+            // DEPARTMENT
             if (this.hasDepartment()) {
                 predicates.add(cb.equal(
                     cb.function("text", String.class, root.get("ownerDepartment")),
                     this.getDepartment().name()
                 ));
+            }
+
+            // CREATED AT
+            if (this.hasCreatedAt()) {
+                LocalDateTime dateMin = this.getCreatedAt().toLocalDate().atStartOfDay();
+                LocalDateTime dateMax = this.getCreatedAt().toLocalDate().atTime(23, 59, 59);
+                predicates.add(cb.between(root.get("createdAt"), dateMin, dateMax));
             }
 
             // CATEGORY (jointure)
@@ -119,5 +129,6 @@ public class ToolFilter extends GenericFilter{
         if (this.hasStatus()) fa.add("status", this.getStatus());
         if (this.hasDepartment()) fa.add("department", this.getDepartment());
         if (this.hasCategory()) fa.add("category", this.getCategory());
+        if (this.hasCreatedAt()) fa.add("createdAt", this.getCreatedAt());
     }
 }

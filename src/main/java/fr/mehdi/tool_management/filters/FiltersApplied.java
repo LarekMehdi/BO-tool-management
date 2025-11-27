@@ -44,10 +44,4 @@ public class FiltersApplied {
         return Collections.unmodifiableMap(filters);
     }
 
-    /** EMPTY **/
-
-    public boolean isEmpty() {
-        return filters.isEmpty();
-    }
-
 }
