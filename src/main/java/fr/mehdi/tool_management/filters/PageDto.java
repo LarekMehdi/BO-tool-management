@@ -2,8 +2,16 @@ package fr.mehdi.tool_management.filters;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import fr.mehdi.tool_management.utils.UtilEntity;
 
+@JsonPropertyOrder({
+    "data",
+    "total",
+    "filtered",
+    "filtersApplied"
+})
 public class PageDto<T> {
     
     private List<T>             data;

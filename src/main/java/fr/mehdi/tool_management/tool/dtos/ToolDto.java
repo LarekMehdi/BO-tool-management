@@ -3,6 +3,8 @@ package fr.mehdi.tool_management.tool.dtos;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import fr.mehdi.tool_management.category.Category;
 import fr.mehdi.tool_management.constantes.Department;
 import fr.mehdi.tool_management.constantes.ToolStatus;
@@ -16,6 +18,19 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonPropertyOrder({
+    "id",
+    "name",
+    "description",
+    "vendor",
+    "category",
+    "monthlyCost",
+    "ownerDepartment",
+    "status",
+    "websiteUrl",
+    "activeUsersCount",
+    "createdAt"
+})
 public class ToolDto {
 
     private Integer         id;
@@ -29,7 +44,7 @@ public class ToolDto {
     private String          websiteUrl;
     private Integer         activeUsersCount;
     private LocalDateTime   createdAt;
-    
+
 
     public ToolDto(Tool tool, Category category) {
         this.id = tool.getId();
