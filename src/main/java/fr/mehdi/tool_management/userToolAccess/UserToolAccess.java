@@ -62,4 +62,20 @@ public class UserToolAccess {
     @JoinColumn(name = "tool_id")
     private Tool                tool;
 
+    /** IDS BRUTS (pour éviter les fetchs automatiques) **/
+
+    @Column(name = "granted_by", insertable = false, updatable = false)
+    private Integer             grantedById;
+
+    @Column(name = "revoked_by", insertable = false, updatable = false)
+    private Integer             revokedById;
+
+    @Column(name = "user_id", insertable = false, updatable = false)
+    private Integer             userId;
+
+    @Column(name = "tool_id", insertable = false, updatable = false)
+    private Integer             toolId;
+
+
+
 }

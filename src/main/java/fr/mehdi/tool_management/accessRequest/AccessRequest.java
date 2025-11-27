@@ -64,5 +64,16 @@ public class AccessRequest {
     @JoinColumn(name = "tool_id")
     private Tool                tool;
 
+    /** IDS BRUTS (pour éviter les fetchs automatiques) **/
+
+    @Column(name = "user_id", insertable = false, updatable = false)
+    private Integer             userId;
+
+    @Column(name = "processed_by", insertable = false, updatable = false)
+    private Integer             processedById;
+
+    @Column(name = "tool_id", insertable = false, updatable = false)
+    private Integer             toolId;
+
 
 }

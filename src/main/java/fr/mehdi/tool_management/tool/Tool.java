@@ -72,11 +72,11 @@ public class Tool {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category            category;
+
+    /** IDS BRUTS (pour éviter les fetchs automatiques) **/
+
+    @Column(name = "category_id", insertable = false, updatable = false)
+    private Integer             categoryId;
     
 
-    
-  
-
-   
- 
 }

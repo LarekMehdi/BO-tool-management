@@ -49,6 +49,11 @@ public class CostTracking {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "tool_id")
     private Tool                tool;
+
+    /** IDS BRUTS (pour éviter les fetchs automatiques) **/
+
+    @Column(name = "tool_id", insertable = false, updatable = false)
+    private Integer             toolId;
     
 
 }

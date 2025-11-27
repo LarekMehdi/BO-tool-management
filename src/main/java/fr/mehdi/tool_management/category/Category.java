@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import fr.mehdi.tool_management.utils.UtilEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -39,5 +40,11 @@ public class Category {
     @Column(nullable = false)
     @CreationTimestamp
     private LocalDateTime       createdAt;
+
+    /** ID **/
+
+    public boolean hasId() {
+        return !UtilEntity.isEmpty(this.id);
+    }
     
 }
