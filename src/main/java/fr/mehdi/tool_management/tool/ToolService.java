@@ -4,6 +4,7 @@ package fr.mehdi.tool_management.tool;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -23,10 +24,14 @@ import fr.mehdi.tool_management.filters.PageDto;
 import fr.mehdi.tool_management.tool.dtos.ToolDetailsDto;
 import fr.mehdi.tool_management.tool.dtos.ToolDto;
 import fr.mehdi.tool_management.tool.filters.ToolFilter;
+import fr.mehdi.tool_management.usageLog.UsageLog;
+import fr.mehdi.tool_management.usageLog.UsageLogService;
 import fr.mehdi.tool_management.usageLog.dtos.UsageMetricsDto;
 import fr.mehdi.tool_management.usageLog.dtos.UsageStatsDto;
+import fr.mehdi.tool_management.usageLog.filters.UsageLogFilter;
 import fr.mehdi.tool_management.utils.UtilList;
 import fr.mehdi.tool_management.utils.UtilMapper;
+import fr.mehdi.tool_management.utils.UtilMetrics;
 
 @Service
 public class ToolService {
@@ -36,6 +41,9 @@ public class ToolService {
 
     @Autowired
     private CategoryService     categoryService;
+
+    @Autowired
+    private UsageLogService     usageLogService;
 
     /** FIND ALL **/
 
@@ -76,7 +84,17 @@ public class ToolService {
         Tool tool = optTool.get();
         Category category = tool.getCategory();
 
+        // récupération des logs
+        LocalDateTime now = LocalDateTime.now();
+        // TODO: UtilDate
+        LocalDateTime thirtyDaysAgo = now.minusDays(30);
+        UsageLogFilter filter = new UsageLogFilter();
+        filter.setToolId(id);
+        filter.setMinSessionDate(thirtyDaysAgo);
+        List<UsageLog> usageLogs = this.usageLogService.findAll(filter);
+
         // construction des metrics
+        int avgMinutes = UtilMetrics.computeAvgSessionMinutes(usageLogs);
         UsageStatsDto statsDto = new UsageStatsDto();
         UsageMetricsDto usageMetrics = new UsageMetricsDto(statsDto);
 
