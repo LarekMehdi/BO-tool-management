@@ -1,23 +1,20 @@
-package fr.mehdi.tool_management.tool;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+package fr.mehdi.tool_management.user;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import fr.mehdi.tool_management.category.Category;
 import fr.mehdi.tool_management.constantes.Department;
-import fr.mehdi.tool_management.constantes.ToolStatus;
+import fr.mehdi.tool_management.constantes.UserRole;
+import fr.mehdi.tool_management.constantes.UserStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,8 +26,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tools")
-public class Tool {
+@Table(name = "users")
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,28 +36,23 @@ public class Tool {
     @Column(nullable = false)
     private String              name;
 
-    @Column(nullable = true, columnDefinition = "TEXT")
-    private String              description;
-
-    @Column
-    private String              vendor;
-
-    @Column
-    private String              websiteUrl;
-
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal          monthlyCost; 
-
-    @Column(nullable = false)
-    private Integer             activeUsersCount;
+    @Column(nullable = false, unique = true)
+    private String              email;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private Department          ownerDepartment;
+    private Department          department;
 
     @Column
     @Enumerated(EnumType.STRING)
-    private ToolStatus          status = ToolStatus.active;
+    private UserRole            role = UserRole.employee;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private UserStatus          status = UserStatus.active;
+
+    @Column
+    private LocalDate           hireDate;
 
     @Column(nullable = false)
     @CreationTimestamp
@@ -68,15 +60,10 @@ public class Tool {
 
     @Column
     private LocalDateTime       updatedAt;
-
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category            category;
     
 
-    
-  
 
-   
+
  
+
 }
