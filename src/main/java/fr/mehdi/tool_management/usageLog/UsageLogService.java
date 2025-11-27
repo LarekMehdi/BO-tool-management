@@ -18,7 +18,6 @@ public class UsageLogService {
 
     public List<UsageLog> findAll(UsageLogFilter filter) {
         // récupération des logs avec filtre (sans pagination)
-        filter.initGenericFilterIfNeeded();
         Specification<UsageLog> specification = filter.toSpecification();
         List<UsageLog> tools = this.usageLogRepository.findAll(specification);
 

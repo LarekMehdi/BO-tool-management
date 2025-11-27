@@ -29,6 +29,7 @@ import fr.mehdi.tool_management.usageLog.UsageLogService;
 import fr.mehdi.tool_management.usageLog.dtos.UsageMetricsDto;
 import fr.mehdi.tool_management.usageLog.dtos.UsageStatsDto;
 import fr.mehdi.tool_management.usageLog.filters.UsageLogFilter;
+import fr.mehdi.tool_management.utils.UtilDate;
 import fr.mehdi.tool_management.utils.UtilList;
 import fr.mehdi.tool_management.utils.UtilMapper;
 import fr.mehdi.tool_management.utils.UtilMetrics;
@@ -84,18 +85,17 @@ public class ToolService {
         Tool tool = optTool.get();
         Category category = tool.getCategory();
 
-        // récupération des logs
-        LocalDateTime now = LocalDateTime.now();
-        // TODO: UtilDate
-        LocalDateTime thirtyDaysAgo = now.minusDays(30);
-        UsageLogFilter filter = new UsageLogFilter();
-        filter.setToolId(id);
-        filter.setMinSessionDate(thirtyDaysAgo);
+        // récupération des logs   
+        LocalDateTime thirtyDaysAgo = UtilDate.removeDaysFromNow(30);
+        UsageLogFilter filter = new UsageLogFilter(id, thirtyDaysAgo);
         List<UsageLog> usageLogs = this.usageLogService.findAll(filter);
 
-        // construction des metrics
+        // calcul des stats
         int avgMinutes = UtilMetrics.computeAvgSessionMinutes(usageLogs);
-        UsageStatsDto statsDto = new UsageStatsDto();
+        int totalSession = usageLogs.size();
+        
+        // construction des metrics
+        UsageStatsDto statsDto = new UsageStatsDto(totalSession, avgMinutes);
         UsageMetricsDto usageMetrics = new UsageMetricsDto(statsDto);
 
         // construction du résultat final
