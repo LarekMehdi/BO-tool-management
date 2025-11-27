@@ -1,6 +1,7 @@
 package fr.mehdi.tool_management.tool;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,11 +16,14 @@ import jakarta.validation.Valid;
 @RequestMapping("/tools")
 public class ToolController {
 
+    @Autowired
+    private ToolService     toolService;
+
     /** FIND ALL **/
 
-    // @GetMapping()
-    // public PageDto<ToolDto> findAll(@ModelAttribute @Valid ToolFilter filter) {
-        
-    // }
+    @GetMapping()
+    public PageDto<ToolDto> findAll(@ModelAttribute @Valid ToolFilter filter) {
+        return this.toolService.findAll(filter);
+    }
     
 }

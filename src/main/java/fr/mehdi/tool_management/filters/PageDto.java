@@ -6,39 +6,69 @@ import fr.mehdi.tool_management.utils.UtilEntity;
 
 public class PageDto<T> {
     
-    private List<T>     datas;
-    private Long        totalElement;
+    private List<T>             data;
+    private Long                total;
+    private Long                filtered;
+    private FiltersApplied      filtersApplied;
     
-    public PageDto(List<T> datas, Long totalElement) {
-        this.datas = datas;
-        this.totalElement = totalElement;
+    public PageDto(List<T> datas, Long total) {
+        this.data = datas;
+        this.total = total;
     }
 
-    /** DATAS **/
+    /** DATA **/
 
-    public List<T> getDatas() {
-        return this.datas;
+    public List<T> getData() {
+        return this.data;
     }
 
-    public void setDatas(List<T> datas) {
-        this.datas = datas;
+    public void setData(List<T> datas) {
+        this.data = datas;
     }
 
-    public boolean hasDatas() {
-        return !UtilEntity.isEmpty(this.datas);
+    public boolean hasData() {
+        return !UtilEntity.isEmpty(this.data);
     }
 
-    /** TOTAL ELEMENT **/
+    /** TOTAL **/
 
-    public Long getTotalElement() {
-        return this.totalElement;
+    public Long getTotal() {
+        return this.total;
     }
 
-    public void setTotalElement(Long totalElement) {
-        this.totalElement = totalElement;
+    public void setTotal(Long total) {
+        this.total = total;
     }
 
-    public boolean hasTotalElement() {
-        return !UtilEntity.isEmpty(this.totalElement);
+    public boolean hasTotal() {
+        return !UtilEntity.isEmpty(this.total);
+    }
+
+    /** FILTERED **/
+
+    public Long getFiltered() {
+        return this.filtered;
+    }
+
+    public void setFiltered(Long filtered) {
+        this.filtered = filtered;
+    }
+
+    public boolean hasFiltered() {
+        return !UtilEntity.isEmpty(this.filtered);
+    }
+
+    /** FILTERS APPLIED **/
+
+    public FiltersApplied getFiltersApplied() {
+        return this.filtersApplied;
+    }
+
+    public void setFiltersApplied(FiltersApplied filtersApplied) {
+        this.filtersApplied = filtersApplied;
+    }
+
+    public boolean hasFiltersApplied() {
+        return !UtilEntity.isEmpty(this.filtersApplied);
     }
 }
