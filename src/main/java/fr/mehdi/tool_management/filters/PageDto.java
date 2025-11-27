@@ -24,10 +24,11 @@ public class PageDto<T> {
         this.total = total;
     }
 
-    public PageDto(List<T> datas, Long total, FiltersApplied filtersApplied) {
+    public PageDto(List<T> datas, Long total, FiltersApplied filtersApplied, Long filtered) {
         this.data = datas;
         this.total = total;
         this.filtersApplied = filtersApplied;
+        this.filtered = filtered;
     }
 
     /** DATA **/

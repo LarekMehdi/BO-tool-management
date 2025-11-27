@@ -40,17 +40,20 @@ public class ToolService {
         Specification<Tool> specification = filter.toSpecification();
         Page<Tool> tools = this.toolRepository.findAll(specification, pageable);
 
+        // Nombre total après filtrage (sans pagination)
+        long filtered = this.toolRepository.count(specification);
+
         // récupération des category liées sans lazy loading (pour optimisation)
         List<Tool> toolList = tools.getContent();
         List<Integer> categoryIds = UtilList.collect(toolList, Tool::getCategoryId);
         List<Category> categories = this.categoryService.findAllByIds(categoryIds);
         Map<Integer, Category> categoryById = categories.stream().filter(Category::hasId).collect(Collectors.toMap(Category::getId, Function.identity()));
 
-        FiltersApplied filtersApplied = new FiltersApplied();
+        FiltersApplied filtersApplied = filter.buildFiltersApplied();
 
         // construction du résultat
         List<ToolDto> toolDtos = UtilMapper.mapToolListToDtos(tools.getContent(), categoryById);
-        PageDto<ToolDto> result = new PageDto<>(toolDtos, tools.getTotalElements(), filtersApplied);
+        PageDto<ToolDto> result = new PageDto<>(toolDtos, tools.getTotalElements(), filtersApplied, filtered);
         return result;
 
     }
