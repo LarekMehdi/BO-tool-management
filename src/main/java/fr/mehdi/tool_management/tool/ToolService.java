@@ -2,9 +2,11 @@ package fr.mehdi.tool_management.tool;
 
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -12,13 +14,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 
 import fr.mehdi.tool_management.category.Category;
 import fr.mehdi.tool_management.category.CategoryService;
 import fr.mehdi.tool_management.filters.FiltersApplied;
 import fr.mehdi.tool_management.filters.PageDto;
+import fr.mehdi.tool_management.tool.dtos.ToolDetailsDto;
 import fr.mehdi.tool_management.tool.dtos.ToolDto;
 import fr.mehdi.tool_management.tool.filters.ToolFilter;
+import fr.mehdi.tool_management.usageLog.dtos.UsageMetricsDto;
+import fr.mehdi.tool_management.usageLog.dtos.UsageStatsDto;
 import fr.mehdi.tool_management.utils.UtilList;
 import fr.mehdi.tool_management.utils.UtilMapper;
 
@@ -56,6 +62,29 @@ public class ToolService {
         PageDto<ToolDto> result = new PageDto<>(toolDtos, tools.getTotalElements(), filtersApplied, filtered);
         return result;
 
+    }
+
+    /** FIND **/
+
+    public ToolDetailsDto findDetailsById(Integer id) {
+
+        // récupération du tool
+        Optional<Tool> optTool = this.toolRepository.findById(id);
+        // TODO: NotFoundException
+        if (!optTool.isPresent()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No tool found with id " + id);
+
+        Tool tool = optTool.get();
+        Category category = tool.getCategory();
+
+        // construction des metrics
+        UsageStatsDto statsDto = new UsageStatsDto();
+        UsageMetricsDto usageMetrics = new UsageMetricsDto(statsDto);
+
+        // construction du résultat final
+        ToolDetailsDto dto = new ToolDetailsDto(tool, category, usageMetrics);
+
+        return dto;
+        
     }
     
 }
