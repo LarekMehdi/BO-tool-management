@@ -47,7 +47,7 @@ public class ToolDetailsDto {
     private Department      ownerDepartment;
     private ToolStatus      status;
     private Integer         activeUsersCount;
-    private BigDecimal      totalMonthlyCost;       // monthlyCost depuis createdAt?
+    private BigDecimal      totalMonthlyCost;       // monthlyCost * active users? monthlyCost depuis createdAt?
     private LocalDateTime   createdAt;
     private LocalDateTime   updatedAt;
     private UsageMetricsDto usageMetrics;
@@ -63,10 +63,19 @@ public class ToolDetailsDto {
         this.ownerDepartment = tool.getOwnerDepartment();
         this.status = tool.getStatus();
         this.activeUsersCount = tool.getActiveUsersCount();
-        //this.totalMonthlyCost
+        this.totalMonthlyCost = this.computeMonthlyCost();
         this.createdAt = tool.getCreatedAt();
         this.updatedAt = tool.getUpdatedAt();
         this.usageMetrics = usageMetrics;
+    }
+
+    /** MONTHLY COST **/
+
+    public BigDecimal computeMonthlyCost() {
+        if (this.activeUsersCount == null || this.monthlyCost == null) {
+            return BigDecimal.ZERO;
+        }
+        return this.monthlyCost.multiply(BigDecimal.valueOf(this.activeUsersCount));
     }
 
 }
