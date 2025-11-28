@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.mehdi.tool_management.analytics.dtos.AnalyticDto;
+import fr.mehdi.tool_management.analytics.dtos.AnalyticExpensiveDto;
 import fr.mehdi.tool_management.analytics.filters.AnalyticFilter;
 import jakarta.validation.Valid;
 
@@ -22,6 +23,11 @@ public class AnalycticController {
     @GetMapping("/department-costs")
     public AnalyticDto findDepartmentCost(@ModelAttribute @Valid AnalyticFilter filter) {
         return this.analyticService.findDepartmentCost(filter);
+    }
+
+    @GetMapping("expensive-tools")
+    public AnalyticExpensiveDto findExpensiveTools(@ModelAttribute @Valid AnalyticFilter filter) {
+        return this.analyticService.findExpensiveTools(filter);
     }
 
     

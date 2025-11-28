@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.mehdi.tool_management.analytics.dtos.AnalyticDto;
+import fr.mehdi.tool_management.analytics.dtos.AnalyticExpensiveDto;
 import fr.mehdi.tool_management.analytics.dtos.AnalyticItemDto;
 import fr.mehdi.tool_management.analytics.dtos.AnalyticSummaryDto;
 import fr.mehdi.tool_management.analytics.filters.AnalyticFilter;
@@ -62,5 +63,25 @@ public class AnalyticService {
         AnalyticSummaryDto summary = new AnalyticSummaryDto(totalCompanyCosts, departmentCount, mostExpensiveDepartment);
 
         return new AnalyticDto(items, summary);
+    }
+
+    public AnalyticExpensiveDto findExpensiveTools(AnalyticFilter filter) {
+        AnalyticExpensiveDto dto = new AnalyticExpensiveDto();
+
+        // recup des tools avec filter minCost
+
+        // calcul avgCostByUser
+
+        // boucle sur tools
+            // calcul costByUser
+            // calcul efficiencyRationg => UtilMetric
+
+        // calcul potentialSavings
+
+        // construction analysis
+
+
+
+        return dto;
     }
 }
