@@ -6,8 +6,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import fr.mehdi.tool_management.tool.custom.CustomToolRepository;
+
 @Repository
-public interface ToolRepository extends JpaRepository<Tool, Integer>, JpaSpecificationExecutor<Tool> {
+public interface ToolRepository extends JpaRepository<Tool, Integer>, JpaSpecificationExecutor<Tool>, CustomToolRepository {
 
     /** COUNT **/
 

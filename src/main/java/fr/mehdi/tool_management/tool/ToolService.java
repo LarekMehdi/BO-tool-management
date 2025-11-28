@@ -34,9 +34,15 @@ import fr.mehdi.tool_management.utils.UtilDate;
 import fr.mehdi.tool_management.utils.UtilList;
 import fr.mehdi.tool_management.utils.UtilMapper;
 import fr.mehdi.tool_management.utils.UtilMetrics;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 
 @Service
 public class ToolService {
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     private ToolRepository      toolRepository;
@@ -114,17 +120,20 @@ public class ToolService {
 
     /** CREATE **/
 
+    @Transactional
     public ToolDto create(CreateToolDto dto) {
-
         // name unique
         // TODO: catcher erreur sql plutot que de vérifier avant
-        int nameExist = this.countByName(dto.getName());
+        int nameExist = this.toolRepository.countByName(dto.getName());
         if (nameExist > 0) throw new ResponseStatusException(HttpStatus.CONFLICT, "Tool name already exist [" + dto.getName() + "]");
 
         Category category = this.categoryService.findById(dto.getCategoryId());
 
-        Tool tool = new Tool(dto);
-        tool = this.toolRepository.save(tool);
+        // Insertion via repository custom à cause de l'enum
+        Integer toolId = this.toolRepository.insertToolWithEnumCast(dto);
+
+        // Récupérer l'objet créé
+        Tool tool = this.toolRepository.findById(toolId).orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Tool created but not found"));
 
         return new ToolDto(tool, category);
     }
