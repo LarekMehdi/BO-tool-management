@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -16,6 +17,7 @@ import fr.mehdi.tool_management.filters.PageDto;
 import fr.mehdi.tool_management.tool.dtos.CreateToolDto;
 import fr.mehdi.tool_management.tool.dtos.ToolDetailsDto;
 import fr.mehdi.tool_management.tool.dtos.ToolDto;
+import fr.mehdi.tool_management.tool.dtos.UpdateToolDto;
 import fr.mehdi.tool_management.tool.filters.ToolFilter;
 import jakarta.validation.Valid;
 
@@ -38,6 +40,13 @@ public class ToolController {
     @GetMapping("/{id}")
     public ToolDetailsDto findDetailsById(@PathVariable("id") Integer id) {
         return this.toolService.findDetailsById(id);
+    }
+
+    /** UPDATE **/
+
+    @PutMapping("/{id}")
+    public ToolDto update(@RequestBody @Valid UpdateToolDto dto, @PathVariable("id") Integer id) {
+        return this.toolService.update(dto, id);
     }
 
     /** CREATE **/

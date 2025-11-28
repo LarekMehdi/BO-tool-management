@@ -24,6 +24,7 @@ import fr.mehdi.tool_management.filters.PageDto;
 import fr.mehdi.tool_management.tool.dtos.CreateToolDto;
 import fr.mehdi.tool_management.tool.dtos.ToolDetailsDto;
 import fr.mehdi.tool_management.tool.dtos.ToolDto;
+import fr.mehdi.tool_management.tool.dtos.UpdateToolDto;
 import fr.mehdi.tool_management.tool.filters.ToolFilter;
 import fr.mehdi.tool_management.usageLog.UsageLog;
 import fr.mehdi.tool_management.usageLog.UsageLogService;
@@ -82,6 +83,12 @@ public class ToolService {
 
     /** FIND **/
 
+    public Tool findById(Integer id) {
+        Optional<Tool> optTool = this.toolRepository.findById(id);
+        if (!optTool.isPresent()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No tool found with id " + id); 
+        return optTool.get();
+    }
+
     public ToolDetailsDto findDetailsById(Integer id) {
 
         // récupération du tool
@@ -116,6 +123,34 @@ public class ToolService {
 
     public int countByName(String name) {
         return this.toolRepository.countByName(name);
+    }
+
+    /** UPDATE **/
+
+    @Transactional
+    public ToolDto update(UpdateToolDto dto, Integer id) {
+        // Vérifier que le tool existe
+        Tool existingTool = this.findById(id);
+        
+        // name unique
+        if (dto.hasName() && !dto.getName().equals(existingTool.getName())) {
+            int nameExist = this.toolRepository.countByName(dto.getName());
+            if (nameExist > 0) throw new ResponseStatusException(HttpStatus.CONFLICT, "Tool name already exist [" + dto.getName() + "]");
+        }
+        
+        // categorie existe
+        Category category = existingTool.getCategory();
+        if (dto.hasCategoryId() && !dto.getCategoryId().equals(existingTool.getCategoryId())) {
+            category = this.categoryService.findById(dto.getCategoryId());
+        }
+        
+        // Update via repository custom à cause de l'enum
+        this.toolRepository.updateToolWithEnumCast(id, dto);
+        
+        // Récupérer l'objet mis à jour
+        Tool updatedTool = this.findById(id);
+        
+        return new ToolDto(updatedTool, category);
     }
 
     /** CREATE **/
