@@ -9,6 +9,7 @@ import fr.mehdi.tool_management.constantes.Department;
 import fr.mehdi.tool_management.constantes.ToolStatus;
 import fr.mehdi.tool_management.converters.DepartmentConverter;
 import fr.mehdi.tool_management.converters.ToolStatusConverter;
+import fr.mehdi.tool_management.tool.dtos.CreateToolDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -77,6 +78,18 @@ public class Tool {
 
     @Column(name = "category_id", insertable = false, updatable = false)
     private Integer             categoryId;
+
+
+
+    public Tool(CreateToolDto dto) {
+        this.name = dto.getName();
+        this.description = dto.getDescription();
+        this.vendor = dto.getVendor();
+        this.websiteUrl = dto.getWebsiteUrl();
+        this.categoryId = dto.getCategoryId();
+        this.monthlyCost = dto.getMonthlyCost();
+        this.ownerDepartment = dto.getOwnerDepartment();
+    }
     
 
 }

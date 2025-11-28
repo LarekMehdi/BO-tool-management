@@ -47,5 +47,5 @@ public class CreateToolDto {
     private BigDecimal      monthlyCost;
 
     @NotNull(message = "Owner department is required")
-    private Department          ownerDepartment;            
+    private Department      ownerDepartment;            
 }

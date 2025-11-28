@@ -106,16 +106,27 @@ public class ToolService {
         
     }
 
+    /** COUNT **/
+
+    public int countByName(String name) {
+        return this.toolRepository.countByName(name);
+    }
+
     /** CREATE **/
 
-     public ToolDto create(CreateToolDto dto) {
+    public ToolDto create(CreateToolDto dto) {
 
-        // dto.name unique
-        // dto.categoryId doit exister
-        // department valide
+        // name unique
+        // TODO: catcher erreur sql plutot que de vérifier avant
+        int nameExist = this.countByName(dto.getName());
+        if (nameExist > 0) throw new ResponseStatusException(HttpStatus.CONFLICT, "Tool name already exist [" + dto.getName() + "]");
 
-        return new ToolDto();
+        Category category = this.categoryService.findById(dto.getCategoryId());
 
-     }
+        Tool tool = new Tool(dto);
+        tool = this.toolRepository.save(tool);
+
+        return new ToolDto(tool, category);
+    }
     
 }
