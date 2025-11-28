@@ -18,15 +18,15 @@ public abstract class GenericFilter {
 
     private String          sortBy;
 
-    private SortOrder       sortOrder;    
+    private SortOrder       order;    
     
     public GenericFilter() {}
 
-    public GenericFilter(Integer limit, Integer offset, String sortBy, SortOrder sortOrder) {
+    public GenericFilter(Integer limit, Integer offset, String sortBy, SortOrder order) {
         this.limit = limit;
         this.offset = offset;
         this.sortBy = sortBy;
-        this.sortOrder = sortOrder;
+        this.order = order;
     }
 
     public GenericFilter(Integer limit, Integer offset) {
@@ -76,26 +76,26 @@ public abstract class GenericFilter {
         return !UtilEntity.isEmpty(this.sortBy);
     }
 
-    /** SORT ORDER **/
+    /** ORDER **/
 
-    public SortOrder getSortOrder() {
-        return this.sortOrder;
+    public SortOrder getOrder() {
+        return this.order;
     }
 
-    public void setSortOrder(SortOrder sortOrder) {
-        this.sortOrder = sortOrder;
+    public void setOrder(SortOrder order) {
+        this.order = order;
     }
 
-    public boolean hasSortOrder() {
-        return !UtilEntity.isEmpty(this.sortOrder);
+    public boolean hasOrder() {
+        return !UtilEntity.isEmpty(this.order);
     }
 
-    public boolean isSortOrderAsc() {
-        return this.hasSortOrder() && this.getSortOrder() == SortOrder.ASC;
+    public boolean isOrderAsc() {
+        return this.hasOrder() && this.getOrder() == SortOrder.ASC;
     }
 
-    public boolean isSortOrderDesc() {
-        return this.hasSortOrder() && this.getSortOrder() == SortOrder.DESC;
+    public boolean isOrderDesc() {
+        return this.hasOrder() && this.getOrder() == SortOrder.DESC;
     }
 
     /** METHODS **/
@@ -109,7 +109,7 @@ public abstract class GenericFilter {
         Sort sort = Sort.unsorted();
         if (this.hasSortBy()) {
             sort = Sort.by(
-                this.isSortOrderDesc() ? Sort.Direction.DESC : Sort.Direction.ASC,
+                this.isOrderDesc() ? Sort.Direction.DESC : Sort.Direction.ASC,
                 this.getSortBy()
             );
         }

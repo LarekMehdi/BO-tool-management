@@ -48,6 +48,9 @@ public class AnalyticService {
         // calcul des metrics
         List<AnalyticItemDto> items = UtilMetrics.buildAnalyticItems(toolsByDepartment, accessByToolId);
 
+        // tris des résultats
+        if (filter.hasSortBy())  UtilList.sortByField(items, filter.getSortBy(), filter.isOrderAsc());
+
         // calcul du summary
         BigDecimal totalCompanyCosts = UtilList.collect(items, AnalyticItemDto::getTotalCost).stream().filter(Objects::nonNull).reduce(BigDecimal.ZERO, BigDecimal::add);
         int departmentCount = items.size();
