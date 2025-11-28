@@ -2,6 +2,8 @@ package fr.mehdi.tool_management.analytics.dtos;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import fr.mehdi.tool_management.constantes.Department;
 import fr.mehdi.tool_management.tool.Tool;
 import lombok.AllArgsConstructor;
@@ -13,6 +15,14 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonPropertyOrder({
+    "department",
+    "totalCost",
+    "toolsCount",
+    "totalUsers",
+    "averageCostPerTool",
+    "costPercentage"
+})
 public class AnalyticItemDto {
     
     private Department      department;

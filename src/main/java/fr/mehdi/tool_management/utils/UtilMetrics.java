@@ -59,32 +59,35 @@ public abstract class UtilMetrics {
                 return tool.getMonthlyCost().multiply(BigDecimal.valueOf(totalUser));
             }).reduce(BigDecimal.ZERO, BigDecimal::add);
 
-
-            for (Tool tool : tools) {
-                if (accessesByToolId.containsKey(tool.getId())) {
+            long totalUsers = tools.stream()
+                .mapToLong(tool -> {
                     List<UserToolAccess> accessList = accessesByToolId.get(tool.getId());
+                    return accessList == null ? 0 :
+                        accessList.stream()
+                            .filter(a -> a.isStatusActive() && tool.getId().equals(a.getToolId()))
+                            .count();
+                })
+                .sum();
 
-                    AnalyticItemDto dto = new AnalyticItemDto(tool);
-                    long totalUser = accessList.stream().filter((a) -> a.isStatusActive() && Objects.equals(tool.getId(), a.getToolId())).count();
-                    BigDecimal totalCost = tool.getMonthlyCost().multiply(BigDecimal.valueOf(totalUser));
-                    int toolCount = tools.size();
+            // TODO: utilNumber
+            int toolCount = tools.size();
+            BigDecimal avgCostPerTool = toolCount == 0 ? BigDecimal.ZERO :
+                    departmentTotalCost.divide(BigDecimal.valueOf(toolCount), 2, RoundingMode.HALF_UP);
 
-                    // TODO: utilNumber
-                    // avg = total_cost / tools_count (arrondi a deux deciml)
-                    BigDecimal avgCostPerTool = totalCost.divide(BigDecimal.valueOf(toolCount), 2, RoundingMode.HALF_UP);
+            BigDecimal costPercentage = companyTotalCost.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO :
+                    departmentTotalCost.multiply(BigDecimal.valueOf(100)).divide(companyTotalCost, 2, RoundingMode.HALF_UP);
 
-                    // cost_percentage = (département.total_cost / company.total_cost) * 100 
-           
-                    BigDecimal costPercentage = companyTotalCost.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO : departmentTotalCost.multiply(BigDecimal.valueOf(100)).divide(companyTotalCost, 2, RoundingMode.HALF_UP);
+            AnalyticItemDto dto = new AnalyticItemDto();
+            dto.setDepartment(department);
+            dto.setTotalUsers((int) totalUsers);
+            dto.setTotalCost(departmentTotalCost);
+            dto.setAverageCostPerTool(avgCostPerTool);
+            dto.setCostPercentage(costPercentage);
+            dto.setToolsCount(toolCount);
 
-                    dto.setTotalUsers((int) totalUser);
-                    dto.setTotalCost(totalCost);
-                    dto.setAverageCostPerTool(avgCostPerTool);
-                    dto.setCostPercentage(costPercentage);
+            dtos.add(dto);
 
-                    dtos.add(dto);
-                }
-            }
+            
         });
 
         return dtos;
