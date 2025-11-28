@@ -1,7 +1,10 @@
 package fr.mehdi.tool_management.analytics;
 
+import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,12 +12,14 @@ import org.springframework.stereotype.Service;
 
 import fr.mehdi.tool_management.analytics.dtos.AnalyticDto;
 import fr.mehdi.tool_management.analytics.dtos.AnalyticItemDto;
+import fr.mehdi.tool_management.analytics.dtos.AnalyticSummaryDto;
 import fr.mehdi.tool_management.analytics.filters.AnalyticFilter;
 import fr.mehdi.tool_management.constantes.Department;
 import fr.mehdi.tool_management.tool.Tool;
 import fr.mehdi.tool_management.tool.ToolService;
 import fr.mehdi.tool_management.userToolAccess.UserToolAccess;
 import fr.mehdi.tool_management.userToolAccess.UserToolAccessService;
+import fr.mehdi.tool_management.utils.UtilList;
 import fr.mehdi.tool_management.utils.UtilMetrics;
 
 @Service
@@ -43,6 +48,16 @@ public class AnalyticService {
         // calcul des metrics
         List<AnalyticItemDto> items = UtilMetrics.buildAnalyticItems(toolsByDepartment, accessByToolId);
 
-        return new AnalyticDto(items);
+        // calcul du summary
+        BigDecimal totalCompanyCosts = UtilList.collect(items, AnalyticItemDto::getTotalCost).stream().filter(Objects::nonNull).reduce(BigDecimal.ZERO, BigDecimal::add);
+        int departmentCount = items.size();
+        Department mostExpensiveDepartment = items.stream()
+            .max(Comparator.comparing(AnalyticItemDto::getTotalCost).thenComparing(item -> item.getDepartment().name()))
+            .map(AnalyticItemDto::getDepartment)
+            .orElse(null);
+
+        AnalyticSummaryDto summary = new AnalyticSummaryDto(totalCompanyCosts, departmentCount, mostExpensiveDepartment);
+
+        return new AnalyticDto(items, summary);
     }
 }

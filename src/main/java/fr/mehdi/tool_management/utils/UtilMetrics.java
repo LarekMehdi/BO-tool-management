@@ -29,7 +29,6 @@ public abstract class UtilMetrics {
 
     /** ANALYTIC ITEM **/
 
-    // TODO: refactoriser
     public static List<AnalyticItemDto> buildAnalyticItems(Map<Department, List<Tool>> toolsByDepartment, Map<Integer, List<UserToolAccess>> accessesByToolId) {
         List<AnalyticItemDto> dtos = new ArrayList<>();
 
