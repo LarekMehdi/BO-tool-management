@@ -146,11 +146,12 @@ public class ToolService {
         
         // Update via repository custom à cause de l'enum
         this.toolRepository.updateToolWithEnumCast(id, dto);
-        
-        // Récupérer l'objet mis à jour
-        Tool updatedTool = this.findById(id);
-        
-        return new ToolDto(updatedTool, category);
+
+        // maj du tool
+        entityManager.flush();
+        entityManager.refresh(existingTool);
+
+        return new ToolDto(existingTool, category);
     }
 
     /** CREATE **/
