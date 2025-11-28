@@ -40,20 +40,32 @@ public abstract class UtilMetrics {
             long totalUsers = tools.stream().mapToLong(tool -> __countActiveUsers(tool, accessesByToolId)).sum();
             int toolCount = tools.size();
             BigDecimal avgCostPerTool = UtilNumber.divideBigDecimal(departmentTotalCost, toolCount);
-            BigDecimal costPercentage = UtilNumber.divideBigDecimal(UtilNumber.multiplyBigDecimal(departmentTotalCost, BigDecimal.valueOf(100)),companyTotalCost);
-
+        
             // construction dto
             AnalyticItemDto dto = new AnalyticItemDto();
             dto.setDepartment(department);
             dto.setTotalUsers((int) totalUsers);
             dto.setTotalCost(departmentTotalCost);
             dto.setAverageCostPerTool(avgCostPerTool);
-            dto.setCostPercentage(costPercentage);
             dto.setToolsCount(toolCount);
 
             dtos.add(dto);
             
         });
+
+        // calcul de costPercentage a part pour avoir pile 100%
+        BigDecimal sumPercent = BigDecimal.ZERO;
+        for (int i = 0; i < dtos.size(); i++) {
+            AnalyticItemDto dto = dtos.get(i);
+            BigDecimal costPercentage;
+            if (i == dtos.size() - 1) { 
+                costPercentage = UtilNumber.substract(100, sumPercent);
+            } else {
+                costPercentage = UtilNumber.computePercentage(dto.getTotalCost(), companyTotalCost);
+                sumPercent = sumPercent.add(costPercentage);
+            }
+            dto.setCostPercentage(costPercentage);
+        }
 
         return dtos;
     }
