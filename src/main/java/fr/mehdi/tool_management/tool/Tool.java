@@ -10,6 +10,7 @@ import fr.mehdi.tool_management.constantes.ToolStatus;
 import fr.mehdi.tool_management.converters.DepartmentConverter;
 import fr.mehdi.tool_management.converters.ToolStatusConverter;
 import fr.mehdi.tool_management.tool.dtos.CreateToolDto;
+import fr.mehdi.tool_management.utils.UtilEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -89,6 +90,12 @@ public class Tool {
         this.categoryId = dto.getCategoryId();
         this.monthlyCost = dto.getMonthlyCost();
         this.ownerDepartment = dto.getOwnerDepartment();
+    }
+
+    /** OWNER DEPARTMENT **/
+
+    public boolean hasOwnerDepartment() {
+        return !UtilEntity.isEmpty(this.ownerDepartment);
     }
     
 

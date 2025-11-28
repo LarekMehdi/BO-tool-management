@@ -3,6 +3,7 @@ package fr.mehdi.tool_management.analytics.dtos;
 import java.math.BigDecimal;
 
 import fr.mehdi.tool_management.constantes.Department;
+import fr.mehdi.tool_management.tool.Tool;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,10 @@ public class AnalyticItemDto {
     private BigDecimal      totalCost;
     private Integer         toolsCount;
     private Integer         totalUsers;
-    private BigDecimal      averageCostperTool;
-    private BigDecimal      costpercentage;
+    private BigDecimal      averageCostPerTool;
+    private BigDecimal      costPercentage;
+
+    public AnalyticItemDto(Tool tool) {
+        this.department = tool.getOwnerDepartment();
+    }
 }

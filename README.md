@@ -41,3 +41,8 @@
 
 - A ma connaissance, il n'existe pas de version de swagger ou d'openApi supporté sur Spring 4. Aprés avoir fait plusieurs heures de veille et de tests infructueux, je suis obligé de laisser tomber et d'avancer sur la suite.
 
+## Reste à faire
+
+- solution de contournement pour swagger (downgrade vers Spring 3, Java 17, etc.)
+- selection de colonnes dynamiques pour les requetes hybernate
+

@@ -1,12 +1,14 @@
 package fr.mehdi.tool_management.userToolAccess;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import org.hibernate.annotations.CreationTimestamp;
 
 import fr.mehdi.tool_management.constantes.AccessStatus;
 import fr.mehdi.tool_management.tool.Tool;
 import fr.mehdi.tool_management.user.User;
+import fr.mehdi.tool_management.utils.UtilEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -75,6 +77,22 @@ public class UserToolAccess {
 
     @Column(name = "tool_id", insertable = false, updatable = false)
     private Integer             toolId;
+
+    /** TOOL ID **/
+
+    public boolean hasToolId() {
+        return !UtilEntity.isEmpty(this.toolId);
+    }
+
+    /** STATUS **/
+
+    public boolean hasStatus() {
+        return !UtilEntity.isEmpty(this.status);
+    }
+
+    public boolean isStatusActive() {
+        return this.hasStatus() && Objects.equals(AccessStatus.active, this.status);
+    }
 
 
 

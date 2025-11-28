@@ -81,6 +81,10 @@ public class ToolService {
 
     }
 
+    public List<Tool> findAll() {
+        return this.toolRepository.findAll();
+    }
+
     /** FIND **/
 
     public Tool findById(Integer id) {

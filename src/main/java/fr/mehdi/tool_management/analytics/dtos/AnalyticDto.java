@@ -13,7 +13,11 @@ import lombok.Setter;
 @AllArgsConstructor
 public class AnalyticDto {
 
-    private List<AnalyticDto>       data;
+    private List<AnalyticItemDto>       data;
     private AnalyticSummaryDto      summary;
+
+    public AnalyticDto(List<AnalyticItemDto> data) {
+        this.data = data;
+    }
     
 }
