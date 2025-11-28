@@ -1,7 +1,6 @@
 package fr.mehdi.tool_management.utils;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,25 +33,17 @@ public abstract class UtilMetrics {
     public static List<AnalyticItemDto> buildAnalyticItems(Map<Department, List<Tool>> toolsByDepartment, Map<Integer, List<UserToolAccess>> accessesByToolId) {
         List<AnalyticItemDto> dtos = new ArrayList<>();
 
-        // companyTotalCost
         BigDecimal companyTotalCost = __computeCompanyTotalCost(toolsByDepartment, accessesByToolId);
 
-
         toolsByDepartment.forEach((department, tools) -> {
-
-            // departmentTotalCost
+            // calculs des metrics
             BigDecimal departmentTotalCost = __computeDepartmentTotalCost(tools, accessesByToolId);
-
             long totalUsers = tools.stream().mapToLong(tool -> __countActiveUsers(tool, accessesByToolId)).sum();
-
-            // TODO: utilNumber
             int toolCount = tools.size();
-            BigDecimal avgCostPerTool = UtilEntity.isEmpty(toolCount) ? BigDecimal.ZERO :
-                    departmentTotalCost.divide(BigDecimal.valueOf(toolCount), 2, RoundingMode.HALF_UP);
+            BigDecimal avgCostPerTool = UtilNumber.divideBigDecimal(departmentTotalCost, toolCount);
+            BigDecimal costPercentage = UtilNumber.divideBigDecimal(UtilNumber.multiplyBigDecimal(departmentTotalCost, BigDecimal.valueOf(100)),companyTotalCost);
 
-            BigDecimal costPercentage = companyTotalCost.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO :
-                    departmentTotalCost.multiply(BigDecimal.valueOf(100)).divide(companyTotalCost, 2, RoundingMode.HALF_UP);
-
+            // construction dto
             AnalyticItemDto dto = new AnalyticItemDto();
             dto.setDepartment(department);
             dto.setTotalUsers((int) totalUsers);
@@ -81,7 +72,7 @@ public abstract class UtilMetrics {
 
     private static BigDecimal __computeToolTotalCost(Tool tool, Map<Integer, List<UserToolAccess>> accessesByToolId) {
         long totalUsers = __countActiveUsers(tool, accessesByToolId);
-        return tool.getMonthlyCost().multiply(BigDecimal.valueOf(totalUsers));
+        return UtilNumber.multiplyBigDecimal(tool.getMonthlyCost(), (int) totalUsers);
     }
 
     /** COMPANY TOTAL COST **/

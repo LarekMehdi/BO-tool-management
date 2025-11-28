@@ -10,6 +10,7 @@ import fr.mehdi.tool_management.constantes.Department;
 import fr.mehdi.tool_management.constantes.ToolStatus;
 import fr.mehdi.tool_management.tool.Tool;
 import fr.mehdi.tool_management.usageLog.dtos.UsageMetricsDto;
+import fr.mehdi.tool_management.utils.UtilNumber;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -72,10 +73,7 @@ public class ToolDetailsDto {
     /** MONTHLY COST **/
 
     public BigDecimal computeMonthlyCost() {
-        if (this.activeUsersCount == null || this.monthlyCost == null) {
-            return BigDecimal.ZERO;
-        }
-        return this.monthlyCost.multiply(BigDecimal.valueOf(this.activeUsersCount));
+        return UtilNumber.multiplyBigDecimal(this.monthlyCost, this.activeUsersCount);
     }
 
 }
