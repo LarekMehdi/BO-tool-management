@@ -36,6 +36,75 @@
     - .env: variables Docker
     - application.properties: configuration de l’application 
 
+## Exemple d'appel API
+
+- Récupérer tous les outils d’un département avec un statut spécifique
+
+**GET**
+
+```bash
+http://localhost:8080/api/tools?department=Engineering&status=active
+```
+
+- Filtrer les outils par coût, catégorie et date de création
+
+**GET**
+
+```bash
+http://localhost:8080/api/tools?minCost=10&maxCost=50&category=Development&createdAt=2025-11-27T10:15:25.258108
+```
+
+- Récupérer un outil spécifique par son ID
+
+**GET**
+
+```bash
+http://localhost:8080/api/tools/1
+```
+
+- Créer un nouvel outil
+
+**POST**
+
+```bash
+http://localhost:8080/api/tools
+
+body:
+{
+  "name": "Linear4",
+  "description": "Issue tracking and project management",
+  "vendor": "Linear", 
+  "websiteUrl": "https://linear.app",
+  "categoryId": 2,
+  "monthlyCost": 8.00,
+  "ownerDepartment": "Engineering"
+}
+```
+
+- Mettre à jour un outil existant
+
+**PUT**
+
+```bash
+http://localhost:8080/api/tools/7
+
+body:
+{
+  "monthlyCost": 7.00,
+  "status": "deprecated",
+  "description": "Updated description after renewal"
+}
+```
+
+- Récupérer les coûts par département avec tri décroissant
+
+**GET**
+
+```bash
+http://localhost:8080/api/analytics/department-costs?sortBy=totalCost&order=DESC
+```
+
+
 
 ## Problémes rencontrés
 
