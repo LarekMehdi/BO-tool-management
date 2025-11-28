@@ -35,43 +35,19 @@ public abstract class UtilMetrics {
         List<AnalyticItemDto> dtos = new ArrayList<>();
 
         // companyTotalCost
-        BigDecimal companyTotalCost = toolsByDepartment.values().stream().flatMap(list -> list.stream()).map(tool -> {
-            List<UserToolAccess> accessList = accessesByToolId.get(tool.getId());
-            long totalUser = accessList == null ? 0 :
-                accessList.stream()
-                    .filter(a -> a.isStatusActive() && tool.getId().equals(a.getToolId()))
-                    .count();
-
-            return tool.getMonthlyCost().multiply(BigDecimal.valueOf(totalUser));
-        }).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal companyTotalCost = __computeCompanyTotalCost(toolsByDepartment, accessesByToolId);
 
 
         toolsByDepartment.forEach((department, tools) -> {
 
             // departmentTotalCost
-            BigDecimal departmentTotalCost = tools.stream().map(tool -> {
-                List<UserToolAccess> accessList = accessesByToolId.get(tool.getId());
-                long totalUser = accessList == null ? 0 :
-                        accessList.stream()
-                                .filter(a -> a.isStatusActive() && tool.getId().equals(a.getToolId()))
-                                .count();
+            BigDecimal departmentTotalCost = __computeDepartmentTotalCost(tools, accessesByToolId);
 
-                return tool.getMonthlyCost().multiply(BigDecimal.valueOf(totalUser));
-            }).reduce(BigDecimal.ZERO, BigDecimal::add);
-
-            long totalUsers = tools.stream()
-                .mapToLong(tool -> {
-                    List<UserToolAccess> accessList = accessesByToolId.get(tool.getId());
-                    return accessList == null ? 0 :
-                        accessList.stream()
-                            .filter(a -> a.isStatusActive() && tool.getId().equals(a.getToolId()))
-                            .count();
-                })
-                .sum();
+            long totalUsers = tools.stream().mapToLong(tool -> __countActiveUsers(tool, accessesByToolId)).sum();
 
             // TODO: utilNumber
             int toolCount = tools.size();
-            BigDecimal avgCostPerTool = toolCount == 0 ? BigDecimal.ZERO :
+            BigDecimal avgCostPerTool = UtilEntity.isEmpty(toolCount) ? BigDecimal.ZERO :
                     departmentTotalCost.divide(BigDecimal.valueOf(toolCount), 2, RoundingMode.HALF_UP);
 
             BigDecimal costPercentage = companyTotalCost.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO :
@@ -86,11 +62,42 @@ public abstract class UtilMetrics {
             dto.setToolsCount(toolCount);
 
             dtos.add(dto);
-
             
         });
 
         return dtos;
+    }
+
+    /** ACTIVE USERS **/
+
+    private static long __countActiveUsers(Tool tool, Map<Integer, List<UserToolAccess>> accessesByToolId) {
+        List<UserToolAccess> accessList = accessesByToolId.get(tool.getId());
+        if (UtilEntity.isEmpty(accessList)) return 0;
+
+        return accessList.stream().filter(a -> a.isStatusActive() && Objects.equals(tool.getId(), a.getToolId())).count();
+    }
+
+    /** TOTAL COST **/
+
+    private static BigDecimal __computeToolTotalCost(Tool tool, Map<Integer, List<UserToolAccess>> accessesByToolId) {
+        long totalUsers = __countActiveUsers(tool, accessesByToolId);
+        return tool.getMonthlyCost().multiply(BigDecimal.valueOf(totalUsers));
+    }
+
+    /** COMPANY TOTAL COST **/
+
+    private static BigDecimal __computeCompanyTotalCost(Map<Department, List<Tool>> toolsByDepartment, Map<Integer, List<UserToolAccess>> accessesByToolId) {
+        return toolsByDepartment.values().stream()
+            .flatMap(List::stream) // liste de liste => liste
+            .map(tool -> __computeToolTotalCost(tool, accessesByToolId))
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    /** DEPARTMENT TOTAL COST **/
+
+    private static BigDecimal __computeDepartmentTotalCost(List<Tool> tools, Map<Integer, List<UserToolAccess>> accessesByToolId) {
+        return tools.stream().map(tool -> __computeToolTotalCost(tool, accessesByToolId))
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
     
 }
