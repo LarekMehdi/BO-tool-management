@@ -12,8 +12,8 @@
 1. lancer la bdd via docker: `docker-compose --profile postgres up -d`
 2. installer les dépendance: `mvn clean install`
 3. demarer le projet
-4. API disponible sur http://localhost:8080
-5. Documentation: http://localhost:8080/swagger-ui/index.html (probleme de compatibilité)
+4. API disponible sur http://localhost:[port]
+5. Documentation: http://localhost:[port]/swagger-ui/index.html (probleme de compatibilité)
 
 ## Configuration
 - Variables d'environnement: voir application.properties pour celles du projet, et env.example pour celles de docker
@@ -35,4 +35,9 @@
 - .env / application.properties :
     - .env: variables Docker
     - application.properties: configuration de l’application 
+
+
+## Problémes rencontrés
+
+- A ma connaissance, il n'existe pas de version de swagger ou d'openApi supporté sur Spring 4. Aprés avoir fait plusieurs heures de veille et de tests infructueux, je suis obligé de laisser tomber et d'avancer sur la suite.
 
