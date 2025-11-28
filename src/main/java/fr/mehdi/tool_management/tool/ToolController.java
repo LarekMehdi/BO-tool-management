@@ -22,7 +22,7 @@ import fr.mehdi.tool_management.tool.filters.ToolFilter;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/tools")
+@RequestMapping("/api/tools")
 public class ToolController {
 
     @Autowired
