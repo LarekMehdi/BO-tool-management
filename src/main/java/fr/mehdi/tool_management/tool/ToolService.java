@@ -21,6 +21,7 @@ import fr.mehdi.tool_management.category.Category;
 import fr.mehdi.tool_management.category.CategoryService;
 import fr.mehdi.tool_management.filters.FiltersApplied;
 import fr.mehdi.tool_management.filters.PageDto;
+import fr.mehdi.tool_management.tool.dtos.CreateToolDto;
 import fr.mehdi.tool_management.tool.dtos.ToolDetailsDto;
 import fr.mehdi.tool_management.tool.dtos.ToolDto;
 import fr.mehdi.tool_management.tool.filters.ToolFilter;
@@ -104,5 +105,17 @@ public class ToolService {
         return dto;
         
     }
+
+    /** CREATE **/
+
+     public ToolDto create(CreateToolDto dto) {
+
+        // dto.name unique
+        // dto.categoryId doit exister
+        // department valide
+
+        return new ToolDto();
+
+     }
     
 }

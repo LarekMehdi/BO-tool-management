@@ -44,6 +44,7 @@ public class ToolDto {
     private String          websiteUrl;
     private Integer         activeUsersCount;
     private LocalDateTime   createdAt;
+    private LocalDateTime   updatedAt;
 
 
     public ToolDto(Tool tool, Category category) {
@@ -58,6 +59,7 @@ public class ToolDto {
         this.websiteUrl = tool.getWebsiteUrl();
         this.activeUsersCount = tool.getActiveUsersCount();
         this.createdAt = tool.getCreatedAt();
+        this.updatedAt = tool.getUpdatedAt();
     }
     
 }
